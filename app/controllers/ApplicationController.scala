@@ -78,7 +78,11 @@ class ApplicationController extends Controller {
 
   def deleteUser(id: Long) = Action.async { implicit request =>
     UserService.deleteUser(id) map { res =>
-      Redirect(routes.ApplicationController.index())
+      Ok(Json.obj("status" -> "OK", "message" -> ("'user deleted"))).withHeaders(
+        ACCESS_CONTROL_ALLOW_ORIGIN -> "*",
+        ACCESS_CONTROL_ALLOW_METHODS -> "POST, OPTIONS, GET",
+        ACCESS_CONTROL_MAX_AGE -> "300",
+        ACCESS_CONTROL_ALLOW_HEADERS -> "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent")
     }
 
   }
