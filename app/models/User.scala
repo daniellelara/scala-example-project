@@ -1,23 +1,16 @@
 package model
 
-import play.api.Play
-import play.api.data.Form
-import play.api.data.Forms._
+
 import play.api.libs.json.{JsObject, _}
-import play.api.libs.functional.syntax._
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.json.Writes._
 import play.api.Play
 import play.api.data.Form
 import play.api.data.Forms._
-import scala.concurrent._
 import play.api.db.slick.DatabaseConfigProvider
 import scala.concurrent.Future
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.http.HeaderNames._
+
 
 
 

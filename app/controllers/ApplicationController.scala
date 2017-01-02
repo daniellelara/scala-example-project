@@ -3,15 +3,12 @@ package controllers
 import model._
 import model.Protocol._
 import play.api.mvc._
-import scala.concurrent.Future
 import services.UserService
 import scala.concurrent.Future
 import play.api.libs.json._
-import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
-import play.api.libs.json.Reads._
+
 
 
 class ApplicationController extends Controller {
