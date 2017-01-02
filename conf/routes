@@ -11,6 +11,9 @@ GET     /message                    controllers.AsyncController.message
 # Map static resources from the /public folder to the /assets URL path
 
 GET     /                           controllers.ApplicationController.index
+GET     /json                       controllers.ApplicationController.getInJson
 POST    /add                        controllers.ApplicationController.addUser
+OPTIONS /adduser                    controllers.ApplicationController.checkPreFlight
+POST    /adduser                    controllers.ApplicationController.addUserJson
 GET     /delete/:id                 controllers.ApplicationController.deleteUser(id : Long)
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

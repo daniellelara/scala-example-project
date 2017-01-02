@@ -6,8 +6,13 @@ package services
 
 import model.{User, Users}
 import scala.concurrent.Future
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+
 
 object UserService {
+
+
 
   def addUser(user: User): Future[String] = {
     Users.add(user)

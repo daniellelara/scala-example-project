@@ -1,18 +1,39 @@
 package controllers
 
-import model.{User, UserForm}
+import model._
+import model.Protocol._
 import play.api.mvc._
 import scala.concurrent.Future
 import services.UserService
+import scala.concurrent.Future
+import play.api.libs.json._
+import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Writes._
+import play.api.libs.json.Reads._
+
 
 class ApplicationController extends Controller {
 
-  def index: Action[AnyContent] = Action.async { implicit request =>
+
+  def getInJson = Action.async { implicit request =>
     UserService.listAllUsers map { users =>
+      println(users)
+      val json = Json.toJson(users)
+      Ok(json).withHeaders(
+        ACCESS_CONTROL_ALLOW_ORIGIN -> "*",
+        ACCESS_CONTROL_ALLOW_METHODS -> "Get",
+        ACCESS_CONTROL_MAX_AGE -> "300",
+        ACCESS_CONTROL_ALLOW_HEADERS -> "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent")
+    }
+  }
+
+  def index = Action.async { implicit request =>
+    UserService.listAllUsers map { users =>
+      println(users)
       Ok(views.html.index(UserForm.form, users))
     }
-
   }
 
   def addUser() = Action.async { implicit request =>
@@ -26,6 +47,34 @@ class ApplicationController extends Controller {
         )
       })
   }
+
+  def addUserJson = Action(BodyParsers.parse.json) { implicit request =>
+    val addUser = request.body.validate[User]
+    addUser.fold(
+      errors => {
+        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+      },
+      user => {
+        UserService.addUser(user)
+        Ok(Json.obj("status" -> "OK", "message" -> ("'user" + user.firstName + "' saved."))).withHeaders(
+            ACCESS_CONTROL_ALLOW_ORIGIN -> "*",
+            ACCESS_CONTROL_ALLOW_METHODS -> "POST, OPTIONS, GET",
+            ACCESS_CONTROL_MAX_AGE -> "300",
+            ACCESS_CONTROL_ALLOW_HEADERS -> "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent")
+      }
+    )
+  }
+
+  def checkPreFlight = Action {
+    Ok("...").withHeaders(
+      ACCESS_CONTROL_ALLOW_ORIGIN -> "*",
+      ACCESS_CONTROL_ALLOW_METHODS -> "POST, OPTIONS",
+      ACCESS_CONTROL_MAX_AGE -> "300",
+      ACCESS_CONTROL_ALLOW_HEADERS -> "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent")
+  }
+
+
+
 
   def deleteUser(id: Long) = Action.async { implicit request =>
     UserService.deleteUser(id) map { res =>
